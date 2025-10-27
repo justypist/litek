@@ -4,8 +4,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import { Layout } from "./layout";
 import { tools } from "@/components/tool";
+import { Layout } from "./layout";
 
 // 路由配置
 const router = createBrowserRouter([
@@ -14,17 +14,17 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "tools",
+        path: "tool",
         children: [
           ...tools.map((tool) => (
             {
-              path: tool.name,
+              path: tool.path,
               element: tool.component,
             }
           )),
           {
             index: true,
-            element: null,
+            loader: () => redirect("/tool/uuid"),
           },
         ]
       },
@@ -32,15 +32,11 @@ const router = createBrowserRouter([
   },
   {
     index: true,
-    loader: () => {
-      return redirect("/tools");
-    },
+    loader: () => redirect("/tool"),
   },
   {
     path: "*",
-    loader: () => {
-      return redirect("/tools");
-    },
+    loader: () => redirect("/tool"),
   },
 ]);
 

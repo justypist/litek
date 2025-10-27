@@ -1,8 +1,14 @@
-interface Tool {
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  component: React.ReactNode;
-}
+import { Hash } from 'lucide-react'
 
-export const tools: Tool[] = [];
+import type { Tool } from "./type";
+import { UUID } from './uuid'
+
+export const tools: Tool[] = [
+  {
+    path: "uuid",
+    name: "UUID Generator",
+    description: "Generate a UUID",
+    icon: <Hash />,
+    component: <UUID />,
+  }
+];
