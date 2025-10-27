@@ -3,7 +3,7 @@ import { type FC } from "react";
 import * as uuid from 'uuid'
 import { nanoid } from 'nanoid'
 
-export const UUID: FC = () => {
+const Tool: FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <span className="text-sm text-muted-foreground">Refresh the page to generate new UUID</span>
@@ -20,3 +20,5 @@ export const UUID: FC = () => {
     </div>
   );
 };
+
+export default Tool;

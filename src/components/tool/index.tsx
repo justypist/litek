@@ -1,7 +1,15 @@
+import type { ReactNode } from 'react';
 import { Hash } from 'lucide-react'
 
-import type { Tool } from "./type";
-import { UUID } from './uuid'
+import UUID from './uuid'
+
+export interface Tool {
+  path: string;
+  name: string;
+  icon: ReactNode;
+  description: string;
+  component: ReactNode;
+}
 
 export const tools: Tool[] = [
   {
