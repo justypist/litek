@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { Hash } from 'lucide-react'
+import { FileJson, Hash } from 'lucide-react'
 
 import UUID from './uuid'
+import JSON from './json'
 
 export interface Tool {
   path: string;
@@ -18,5 +19,12 @@ export const tools: Tool[] = [
     description: "Generate a UUID",
     icon: <Hash />,
     component: <UUID />,
+  },
+  {
+    path: "json",
+    name: "JSON Formatter",
+    description: "Format and validate JSON",
+    icon: <FileJson />,
+    component: <JSON />,
   }
 ];
