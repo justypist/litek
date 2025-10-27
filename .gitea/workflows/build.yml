@@ -33,7 +33,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ !contains(github.ref, 'snapshot') && !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') }}
       
       - name: 构建并推送 Docker 镜像
         uses: docker/build-push-action@v5
