@@ -2,7 +2,7 @@
 FROM node:22-alpine AS builder
 
 # 安装 pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm
 
 # 设置工作目录
 WORKDIR /app
