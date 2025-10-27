@@ -19,16 +19,16 @@ jobs:
       - name: 登录到 Gitea Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ gitea.server_url }}
-          username: ${{ gitea.actor }}
-          password: ${{ gitea.token }}
+          registry: ${{ secrets.REGISTRY_ENDPOINT }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
       
       - name: 提取 Docker 元数据
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ gitea.server_url }}/${{ gitea.repository_owner }}/litek
+            ${{ secrets.REGISTRY_ENDPOINT }}/${{ github.repository_owner }}/litek
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
