@@ -7,12 +7,12 @@ import { AppSidebar } from "@/components/sidebar";
 export const Layout: FC = () => (
   <SidebarProvider>
     <AppSidebar />
-    <div className="p-4 flex flex-col w-full h-[100vh]">
+    <div className="p-4 flex flex-col w-full h-[100vh] overflow-hidden">
       <nav className="flex items-center justify-between">
         <SidebarTrigger className="size-10" />
         <div role="actions" />
       </nav>
-      <main className="flex-1 overflow-auto p-4">
+      <main className="flex-1 overflow-auto p-4 overflow-hidden">
         <Outlet />
       </main>
     </div>

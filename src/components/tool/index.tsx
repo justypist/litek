@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { FileJson, Hash } from 'lucide-react'
+import { FileJson, Hash, Binary } from 'lucide-react'
 
 import UUID from './uuid'
 import JSON from './json'
+import Base64 from './base64'
 
 export interface Tool {
   path: string;
@@ -26,5 +27,12 @@ export const tools: Tool[] = [
     description: "Format and validate JSON",
     icon: <FileJson />,
     component: <JSON />,
+  },
+  {
+    path: "base64",
+    name: "Base64 Encoder/Decoder",
+    description: "Encode and decode Base64",
+    icon: <Binary />,
+    component: <Base64 />,
   }
 ];
