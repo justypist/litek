@@ -91,8 +91,8 @@ const Tool: FC = () => {
     const startTime = performance.now();
 
     try {
-      // 使用 ip-api.com (免费，功能较全)
-      const response = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip.trim())}?fields=status,message,country,countryCode,region,city,lat,lon,timezone,isp,org,as,proxy,hosting,query`);
+      // 使用 ipinfo.io (免费，稳定可靠)
+      const response = await fetch(`https://ipinfo.io/${encodeURIComponent(ip.trim())}/json`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -103,28 +103,8 @@ const Tool: FC = () => {
       
       setQueryTime(endTime - startTime);
 
-      if (data.status === "fail") {
-        toast.error(data.message || "Query failed");
-        return;
-      }
-
-      // 转换为统一格式
-      const ipData: IPInfo = {
-        ip: data.query,
-        city: data.city,
-        region: data.region,
-        country: data.country,
-        countryCode: data.countryCode,
-        loc: data.lat && data.lon ? `${data.lat},${data.lon}` : undefined,
-        timezone: data.timezone,
-        isp: data.isp,
-        org: data.org,
-        as: data.as,
-        proxy: data.proxy,
-        hosting: data.hosting,
-      };
-
-      setIpInfo(ipData);
+      // ipinfo.io 返回格式已经符合 IPInfo 接口
+      setIpInfo(data);
       toast.success("Query successful");
     } catch (error) {
       if (error instanceof Error) {
@@ -146,14 +126,18 @@ const Tool: FC = () => {
   const getRiskLevel = () => {
     if (!ipInfo) return null;
     
-    if (ipInfo.proxy || ipInfo.hosting) {
+    // ipinfo.io 通过 org 字段可以简单判断是否为托管IP
+    const orgLower = ipInfo.org?.toLowerCase() || "";
+    const isHosting = orgLower.includes("hosting") || 
+                     orgLower.includes("datacenter") || 
+                     orgLower.includes("cloud") ||
+                     orgLower.includes("server");
+    
+    if (isHosting) {
       return {
-        level: "High",
-        color: "text-red-500",
-        reasons: [
-          ipInfo.proxy && "Proxy/VPN detected",
-          ipInfo.hosting && "Hosting/Datacenter IP",
-        ].filter(Boolean),
+        level: "Medium",
+        color: "text-yellow-500",
+        reasons: ["Possible Hosting/Datacenter IP"],
       };
     }
     
