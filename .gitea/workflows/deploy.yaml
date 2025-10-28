@@ -1,0 +1,82 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: '要部署的镜像标签 (例如: v1.0.0, latest)'
+        required: true
+        default: 'latest'
+      compose_path:
+        description: 'docker-compose 文件路径'
+        required: true
+        default: '/root/.compose/litek/compose.yaml'
+  workflow_call:
+    inputs:
+      image_tag:
+        description: '要部署的镜像标签'
+        required: true
+        type: string
+      compose_path:
+        description: 'docker-compose 文件路径'
+        required: false
+        type: string
+        default: '/root/.compose/litek/compose.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 解析 SSH 连接信息
+        id: ssh-info
+        run: |
+          SSH_CONN="${{ secrets.SSH_CONNECTION }}"
+          # 格式: user@host:port
+          SSH_USER=$(echo $SSH_CONN | cut -d'@' -f1)
+          SSH_HOST_PORT=$(echo $SSH_CONN | cut -d'@' -f2)
+          SSH_HOST=$(echo $SSH_HOST_PORT | cut -d':' -f1)
+          SSH_PORT=$(echo $SSH_HOST_PORT | cut -d':' -f2)
+          
+          echo "user=$SSH_USER" >> $GITHUB_OUTPUT
+          echo "host=$SSH_HOST" >> $GITHUB_OUTPUT
+          echo "port=$SSH_PORT" >> $GITHUB_OUTPUT
+          
+          echo "SSH 连接信息已解析: $SSH_USER@$SSH_HOST:$SSH_PORT"
+      
+      - name: 部署到生产服务器
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ steps.ssh-info.outputs.host }}
+          username: ${{ steps.ssh-info.outputs.user }}
+          port: ${{ steps.ssh-info.outputs.port }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "开始部署 litek 应用..."
+            echo "镜像标签: ${{ inputs.image_tag }}"
+            echo "Compose 文件: ${{ inputs.compose_path }}"
+            
+            # 切换到 compose 文件所在目录
+            COMPOSE_DIR=$(dirname "${{ inputs.compose_path }}")
+            cd "$COMPOSE_DIR"
+            
+            echo "当前目录: $(pwd)"
+            
+            # 拉取最新镜像
+            echo "正在拉取镜像..."
+            docker compose -f "${{ inputs.compose_path }}" pull
+            
+            # 更新服务
+            echo "正在更新服务..."
+            docker compose -f "${{ inputs.compose_path }}" up -d
+            
+            # 清理旧镜像
+            echo "清理未使用的镜像..."
+            docker image prune -f
+            
+            echo "部署完成！"
+            
+            # 显示运行状态
+            echo "当前运行的容器:"
+            docker compose -f "${{ inputs.compose_path }}" ps
+
