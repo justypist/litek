@@ -36,6 +36,27 @@ const Tool: FC = () => {
   const seqRef = useRef<number>(0);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
+  const handleUrlBlur = () => {
+    if (!url.trim()) return;
+    
+    let input = url.trim();
+    
+    try {
+      // Try to parse as URL
+      const parsedUrl = new URL(input.startsWith('http') ? input : `https://${input}`);
+      const normalizedUrl = parsedUrl.toString();
+      
+      if (normalizedUrl !== input) {
+        setUrl(normalizedUrl);
+      }
+    } catch {
+      // If parsing fails, add https:// prefix
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        setUrl(`https://${input}`);
+      }
+    }
+  };
+
   const ping = async () => {
     if (!url.trim()) {
       toast.error("Please enter a URL");
@@ -43,12 +64,7 @@ const Tool: FC = () => {
     }
 
     const seq = ++seqRef.current;
-    let targetUrl = url.trim();
-
-    // If no protocol prefix, default to https://
-    if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
-      targetUrl = `https://${targetUrl}`;
-    }
+    const targetUrl = url.trim();
 
     const startTime = performance.now();
 
@@ -177,6 +193,7 @@ const Tool: FC = () => {
             placeholder="e.g. example.com or https://example.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            onBlur={handleUrlBlur}
             disabled={running}
           />
         </div>

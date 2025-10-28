@@ -142,18 +142,34 @@ const Tool: FC = () => {
     }
   };
 
+  const handleUrlBlur = () => {
+    if (!url.trim()) return;
+    
+    let input = url.trim();
+    
+    try {
+      // Try to parse as URL
+      const parsedUrl = new URL(input.startsWith('http') ? input : `https://${input}`);
+      const normalizedUrl = parsedUrl.toString();
+      
+      if (normalizedUrl !== input) {
+        setUrl(normalizedUrl);
+      }
+    } catch {
+      // If parsing fails, add https:// prefix
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        setUrl(`https://${input}`);
+      }
+    }
+  };
+
   const startTest = async () => {
     if (!url.trim()) {
       toast.error("Please enter a URL");
       return;
     }
 
-    let targetUrl = url.trim();
-
-    // If no protocol prefix, default to https://
-    if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
-      targetUrl = `https://${targetUrl}`;
-    }
+    const targetUrl = url.trim();
 
     setTesting(true);
     setResult(null);
@@ -218,6 +234,7 @@ const Tool: FC = () => {
             placeholder="e.g. https://example.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            onBlur={handleUrlBlur}
             onKeyPress={handleKeyPress}
             disabled={testing}
           />

@@ -37,6 +37,46 @@ const Tool: FC = () => {
   const seqRef = useRef<number>(0);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
+  const handleHostBlur = () => {
+    if (!host.trim()) return;
+    
+    let input = host.trim();
+    let cleanHost = input;
+    let extractedPort: string | null = null;
+    
+    try {
+      // Try to parse as URL
+      const url = new URL(input.startsWith('http') ? input : `https://${input}`);
+      cleanHost = url.hostname;
+      
+      // Extract port if specified in URL
+      if (url.port) {
+        extractedPort = url.port;
+      }
+    } catch {
+      // If parsing fails, fallback to manual cleanup
+      const withoutProtocol = input.replace(/^https?:\/\//, "");
+      const withoutPath = withoutProtocol.split("/")[0];
+      
+      // Check for port in the format hostname:port
+      const portMatch = withoutPath.match(/^(.+):(\d+)$/);
+      if (portMatch) {
+        cleanHost = portMatch[1];
+        extractedPort = portMatch[2];
+      } else {
+        cleanHost = withoutPath;
+      }
+    }
+    
+    if (cleanHost !== input) {
+      setHost(cleanHost);
+    }
+    
+    if (extractedPort) {
+      setPort(extractedPort);
+    }
+  };
+
   const tcping = async () => {
     if (!host.trim()) {
       toast.error("Please enter a hostname or IP");
@@ -45,14 +85,11 @@ const Tool: FC = () => {
 
     const seq = ++seqRef.current;
     const portNum = parseInt(port) || 443;
-    let targetUrl = host.trim();
+    const targetHost = host.trim();
 
-    // 移除协议前缀
-    targetUrl = targetUrl.replace(/^https?:\/\//, "");
-
-    // 构建测试 URL
+    // Build test URL
     const protocol = portNum === 443 ? "https" : "http";
-    const url = `${protocol}://${targetUrl}:${portNum}`;
+    const url = `${protocol}://${targetHost}:${portNum}`;
 
     const startTime = performance.now();
 
@@ -182,6 +219,7 @@ const Tool: FC = () => {
             placeholder="e.g. example.com or 192.168.1.1"
             value={host}
             onChange={(e) => setHost(e.target.value)}
+            onBlur={handleHostBlur}
             disabled={running}
           />
         </div>

@@ -41,6 +41,26 @@ const Tool: FC = () => {
   const [results, setResults] = useState<DNSRecord[]>([]);
   const [queryTime, setQueryTime] = useState<number>(0);
 
+  const handleDomainBlur = () => {
+    if (!domain.trim()) return;
+    
+    let input = domain.trim();
+    let cleanDomain = input;
+    
+    try {
+      // Try to parse as URL
+      const url = new URL(input.startsWith('http') ? input : `https://${input}`);
+      cleanDomain = url.hostname;
+    } catch {
+      // If parsing fails, fallback to manual cleanup
+      cleanDomain = input.replace(/^https?:\/\//, "").split("/")[0].split(":")[0];
+    }
+    
+    if (cleanDomain !== input) {
+      setDomain(cleanDomain);
+    }
+  };
+
   const queryDNS = async () => {
     if (!domain.trim()) {
       toast.error("Please enter a domain name");
@@ -58,7 +78,7 @@ const Tool: FC = () => {
       const queries = DNS_RECORD_TYPES.map((recordType) =>
         fetch(
           `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(
-            domain
+            domain.trim()
           )}&type=${recordType.value}`,
           {
             headers: {
@@ -127,6 +147,7 @@ const Tool: FC = () => {
             placeholder="e.g. example.com"
             value={domain}
             onChange={(e) => setDomain(e.target.value)}
+            onBlur={handleDomainBlur}
             onKeyPress={handleKeyPress}
             disabled={loading}
           />
