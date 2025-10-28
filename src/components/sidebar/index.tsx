@@ -1,6 +1,8 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { tools } from "@/components/tool";
 import { Link } from "react-router-dom";
+import { ModeToggle } from "@/components/theme/toggle";
+import { Button } from "../ui/button";
 
 export const AppSidebar = () => (
   <Sidebar>
@@ -28,8 +30,11 @@ export const AppSidebar = () => (
         </SidebarGroupContent>
       </SidebarGroup>
     </SidebarContent>
-    <SidebarFooter>
-      <a href="mailto:litek@mail.typist.cc">contact us</a>
+    <SidebarFooter className="flex flex-row justify-between items-center gap-2">
+      <Button variant="link">
+        <a href="mailto:litek@mail.typist.cc">need more tools?</a>
+      </Button>
+      <ModeToggle />
     </SidebarFooter>
   </Sidebar>
 )
