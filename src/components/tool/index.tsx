@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi } from 'lucide-react'
+import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin } from 'lucide-react'
 
 import UUID from './uuid'
 import JSON from './json'
 import Base64 from './base64'
-import { DNS, Ping, TCPing, SpeedTest } from './network'
+import { DNS, Ping, TCPing, SpeedTest, IPQuery } from './network'
 
 export interface Tool {
   path: string;
@@ -70,6 +70,13 @@ export const tools: Tool[] = [
         description: "Website speed test",
         icon: <Gauge />,
         component: <SpeedTest />,
+      },
+      {
+        path: "ipquery",
+        name: "IP Query",
+        description: "Query IP location, quality and risk info",
+        icon: <MapPin />,
+        component: <IPQuery />,
       },
     ],
   },
