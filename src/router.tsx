@@ -1,3 +1,4 @@
+import { Suspense, createElement } from "react";
 import {
   createBrowserRouter,
   redirect,
@@ -8,6 +9,19 @@ import {
 import { tools, type Tool } from "@/components/tool";
 import { Layout } from "./layout";
 
+// 加载中的占位组件
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center flex flex-col items-center gap-3">
+      <div className="relative">
+        <div className="h-12 w-12 rounded-full border-4 border-muted"></div>
+        <div className="absolute top-0 left-0 h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+      </div>
+      <p className="text-sm text-muted-foreground font-medium">Loading...</p>
+    </div>
+  </div>
+);
+
 const buildToolRoutes = (tools: Tool[]): RouteObject[] => {
   return tools.map((tool) => {
     const route: RouteObject = {
@@ -15,7 +29,12 @@ const buildToolRoutes = (tools: Tool[]): RouteObject[] => {
     };
 
     if (tool.component) {
-      route.element = tool.component;
+      // 使用 Suspense 包裹懒加载组件
+      route.element = (
+        <Suspense fallback={<LoadingFallback />}>
+          {createElement(tool.component)}
+        </Suspense>
+      );
     }
 
     if (tool.children && tool.children.length > 0) {

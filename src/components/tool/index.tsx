@@ -1,17 +1,22 @@
-import type { ReactNode } from 'react';
+import { lazy, type ReactNode, type ComponentType } from 'react';
 import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin } from 'lucide-react'
 
-import UUID from './uuid'
-import JSON from './json'
-import Base64 from './base64'
-import { DNS, Ping, TCPing, SpeedTest, IPQuery } from './network'
+// 懒加载工具组件
+const UUID = lazy(() => import('./uuid'))
+const JSON = lazy(() => import('./json'))
+const Base64 = lazy(() => import('./base64'))
+const DNS = lazy(() => import('./network/dns'))
+const Ping = lazy(() => import('./network/ping'))
+const TCPing = lazy(() => import('./network/tcping'))
+const SpeedTest = lazy(() => import('./network/speedtest'))
+const IPQuery = lazy(() => import('./network/ipquery'))
 
 export interface Tool {
   path: string;
   name: string;
   icon: ReactNode;
   description: string;
-  component?: ReactNode;
+  component?: ComponentType;
   children?: Tool[];
 }
 
@@ -21,21 +26,21 @@ export const tools: Tool[] = [
     name: "UUID Generator",
     description: "Generate a UUID",
     icon: <Hash />,
-    component: <UUID />,
+    component: UUID,
   },
   {
     path: "json",
     name: "JSON Formatter",
     description: "Format and validate JSON",
     icon: <FileJson />,
-    component: <JSON />,
+    component: JSON,
   },
   {
     path: "base64",
     name: "Base64 Encoder/Decoder",
     description: "Encode and decode Base64",
     icon: <Binary />,
-    component: <Base64 />,
+    component: Base64,
   },
   {
     path: "network",
@@ -48,35 +53,35 @@ export const tools: Tool[] = [
         name: "DNS Lookup",
         description: "DNS query tool",
         icon: <Globe />,
-        component: <DNS />,
+        component: DNS,
       },
       {
         path: "ping",
         name: "Ping",
         description: "Ping test tool",
         icon: <Activity />,
-        component: <Ping />,
+        component: Ping,
       },
       {
         path: "tcping",
         name: "TCPing",
         description: "TCP port connectivity test",
         icon: <Wifi />,
-        component: <TCPing />,
+        component: TCPing,
       },
       {
         path: "speedtest",
         name: "Speed Test",
         description: "Website speed test",
         icon: <Gauge />,
-        component: <SpeedTest />,
+        component: SpeedTest,
       },
       {
         path: "ipquery",
         name: "IP Query",
         description: "Query IP location, quality and risk info",
         icon: <MapPin />,
-        component: <IPQuery />,
+        component: IPQuery,
       },
     ],
   },
