@@ -76,8 +76,8 @@ export default defineConfig({
           }
         ],
         cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true
+        clientsClaim: true,   // 新 SW 激活后立即接管
+        skipWaiting: false    // 不自动跳过等待，需要手动触发
       }
     })
   ],
