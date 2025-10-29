@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenuButton, SidebarMenuItem, SidebarMenu, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { tools, type Tool } from "@/components/tool";
-import { Link } from "react-router-dom";
-import { ModeToggle } from "@/components/theme/toggle";
-import { Button } from "../ui/button";
-import { ChevronRight } from "lucide-react";
+
 
 export const AppSidebar = () => {
   // 递归构建完整路径
@@ -88,10 +88,9 @@ export const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="flex flex-row justify-between items-center gap-2">
-        <Button variant="link">
+        <SidebarMenuButton variant="outline" asChild>
           <a href="mailto:litek@mail.typist.cc">need more tools?</a>
-        </Button>
-        <ModeToggle />
+        </SidebarMenuButton>
       </SidebarFooter>
     </Sidebar>
   );

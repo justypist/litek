@@ -4,6 +4,8 @@ import { Outlet } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/provider"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/sidebar";
+import { ModeToggle } from "@/components/theme/toggle";
+
 import { useSEO } from "@/hooks/use-seo";
 
 export const Layout: FC = () => {
@@ -17,7 +19,7 @@ export const Layout: FC = () => {
         <div className="p-4 flex flex-col w-full h-[100vh] overflow-hidden">
           <nav className="flex items-center justify-between">
             <SidebarTrigger className="size-10" />
-            <div role="actions" />
+            <ModeToggle />
           </nav>
           <main className="flex-1 overflow-auto p-4 overflow-hidden">
             <Outlet />
