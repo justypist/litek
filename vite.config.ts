@@ -32,7 +32,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/ipinfo\.io\/.*/i,
-            handler: 'CacheFirst', // 改为 CacheFirst，优先使用缓存
+            handler: "NetworkFirst",
             options: {
               cacheName: 'ipinfo-cache',
               expiration: {
