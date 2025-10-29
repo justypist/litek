@@ -114,11 +114,7 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="flex flex-row justify-between items-center gap-2">
-        <SidebarMenuButton variant="outline" asChild>
-          <a href="mailto:litek@mail.typist.cc">need more tools?</a>
-        </SidebarMenuButton>
-      </SidebarFooter>
+      <SidebarFooter className="flex flex-col gap-2" />
     </Sidebar>
   );
 };
