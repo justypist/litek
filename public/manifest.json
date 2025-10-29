@@ -1,0 +1,21 @@
+{
+  "name": "Lite Kit - Lightweight Online Tools",
+  "short_name": "Lite Kit",
+  "description": "Free online tools including UUID generator, JSON formatter, Base64 encoder/decoder, network testing tools and more",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lite.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "en",
+  "dir": "ltr"
+}
+
