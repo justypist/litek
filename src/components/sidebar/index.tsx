@@ -13,6 +13,46 @@ export const AppSidebar = () => {
     return `/tool/${pathSegments.join("/")}`;
   };
 
+  // 递归渲染子菜单内容
+  const renderSubMenuContent = (child: Tool, currentPaths: string[]): ReactNode => {
+    if (child.children) {
+      // 子菜单内的可折叠项
+      return (
+        <Collapsible defaultOpen={false} className="group/collapsible">
+          <CollapsibleTrigger asChild>
+            <SidebarMenuSubButton>
+              {child.icon}
+              <span>{child.name}</span>
+              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            </SidebarMenuSubButton>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {child.children.map((subChild) => (
+                <SidebarMenuSubItem key={subChild.name}>
+                  {renderSubMenuContent(subChild, [...currentPaths, child.path])}
+                </SidebarMenuSubItem>
+              ))}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </Collapsible>
+      );
+    }
+
+    // 叶子节点
+    return (
+      <SidebarMenuSubButton asChild>
+        <Link
+          to={buildFullPath([...currentPaths, child.path])}
+          title={child.description}
+        >
+          {child.icon}
+          <span>{child.name}</span>
+        </Link>
+      </SidebarMenuSubButton>
+    );
+  };
+
   // 递归渲染菜单项
   const renderMenuItem = (tool: Tool, parentPaths: string[] = []): ReactNode => {
     const currentPaths = [...parentPaths, tool.path];
@@ -20,12 +60,11 @@ export const AppSidebar = () => {
     if (tool.children) {
       // 有子菜单的项目
       return (
-        <Collapsible
-          key={tool.name}
-          defaultOpen={false}
-          className="group/collapsible"
-        >
-          <SidebarMenuItem>
+        <SidebarMenuItem key={tool.name}>
+          <Collapsible
+            defaultOpen={false}
+            className="group/collapsible"
+          >
             <CollapsibleTrigger asChild>
               <SidebarMenuButton tooltip={tool.description}>
                 {tool.icon}
@@ -37,25 +76,13 @@ export const AppSidebar = () => {
               <SidebarMenuSub>
                 {tool.children.map((child) => (
                   <SidebarMenuSubItem key={child.name}>
-                    {child.children ? (
-                      renderMenuItem(child, currentPaths)
-                    ) : (
-                      <SidebarMenuSubButton asChild>
-                        <Link
-                          to={buildFullPath([...currentPaths, child.path])}
-                          title={child.description}
-                        >
-                          {child.icon}
-                          <span>{child.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    )}
+                    {renderSubMenuContent(child, currentPaths)}
                   </SidebarMenuSubItem>
                 ))}
               </SidebarMenuSub>
             </CollapsibleContent>
-          </SidebarMenuItem>
-        </Collapsible>
+          </Collapsible>
+        </SidebarMenuItem>
       );
     }
 
