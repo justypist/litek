@@ -13,3 +13,21 @@ createRoot(document.getElementById('root')!).render(
     <Toaster />
   </StrictMode>
 )
+
+// 注册 Service Worker
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  import('workbox-window').then(({ Workbox }) => {
+    const wb = new Workbox('/sw.js')
+    
+    wb.addEventListener('installed', (event) => {
+      if (event.isUpdate) {
+        console.log('New service worker installed, reloading page...')
+        window.location.reload()
+      }
+    })
+
+    wb.register()
+  }).catch((error) => {
+    console.error('Failed to register service worker:', error)
+  })
+}
