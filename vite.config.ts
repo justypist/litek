@@ -60,11 +60,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // React核心库
-          if (id.includes('node_modules/react') || 
-              id.includes('node_modules/react-dom') || 
-              id.includes('node_modules/react-router-dom')) {
-            return 'react-vendor';
+          // React 核心拆分得更细
+          if (id.includes('node_modules/react/') && !id.includes('node_modules/react-dom')) {
+            return 'react-core';
+          }
+          if (id.includes('node_modules/react-dom/')) {
+            return 'react-dom';
+          }
+          if (id.includes('node_modules/react-router-dom')) {
+            return 'react-router';
           }
           // Radix UI组件
           if (id.includes('node_modules/@radix-ui')) {
@@ -74,7 +78,24 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react')) {
             return 'icons';
           }
+          // 其他工具库
+          if (id.includes('node_modules/')) {
+            return 'vendor';
+          }
         },
+      },
+    },
+    // 启用更激进的压缩
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log'],
+        // 移除未使用的代码
+        unused: true,
+        // 移除死代码
+        dead_code: true,
       },
     },
     chunkSizeWarningLimit: 500,
