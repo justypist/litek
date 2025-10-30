@@ -99,18 +99,20 @@ const Tool: FC = () => {
         const cached = localStorage.getItem(RATES_CACHE_KEY);
         if (cached) {
           try {
-            const { rates: cachedRates, date: cachedDate } = JSON.parse(cached);
+            const { rates: cachedRates, date: cachedDate, fetchedAt } = JSON.parse(cached);
             
-            // Check if cached data is from today
-            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            const now = Date.now();
+            const twelveHoursInMs = 12 * 60 * 60 * 1000;
             
-            if (cachedDate === today) {
-              // Cache is valid (same date), use it directly
+            // Strategy: Use cache if it's recent enough (within 12 hours)
+            // This handles all edge cases: weekends, holidays, timezone differences
+            // Exchange rates update once per day, so 12-hour cache is reasonable
+            if (fetchedAt && (now - fetchedAt < twelveHoursInMs)) {
               setRates(cachedRates);
               setLoading(false);
               return;
             } else {
-              // Cache is outdated, show old data first then update in background
+              // Cache is older than 12 hours, show it first then update in background
               setRates(cachedRates);
               setLoading(false);
               // Continue to fetch new data below
@@ -134,11 +136,15 @@ const Tool: FC = () => {
         const allRates: Record<string, number> = { USD: 1, ...data.rates };
         const apiDate = data.date; // Date from API (YYYY-MM-DD format)
         
-        // 3. Update state and cache
+        // 3. Update state and cache (with timestamp)
         setRates(allRates);
         localStorage.setItem(
           RATES_CACHE_KEY,
-          JSON.stringify({ rates: allRates, date: apiDate })
+          JSON.stringify({ 
+            rates: allRates, 
+            date: apiDate,
+            fetchedAt: Date.now() // Timestamp when we fetched the data
+          })
         );
       } catch (error) {
         // If cache exists, continue using it even if network fails
