@@ -53,7 +53,6 @@ const AVAILABLE_CURRENCIES: Currency[] = [
 const REQUIRED_CURRENCIES = ["USD", "CNY"];
 
 const STORAGE_KEY = "selectedCurrencies";
-const RATES_CACHE_KEY = "currencyRatesCache";
 
 const Tool: FC = () => {
   const [amounts, setAmounts] = useState<Record<string, string>>({});
@@ -91,42 +90,13 @@ const Tool: FC = () => {
     }
   }, [selectedCurrencies]);
 
-  // Fetch exchange rates with date-based caching
+  // Fetch exchange rates (Service Worker handles caching)
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        // 1. Try to load from cache
-        const cached = localStorage.getItem(RATES_CACHE_KEY);
-        if (cached) {
-          try {
-            const { rates: cachedRates, fetchedAt } = JSON.parse(cached);
-            
-            const now = Date.now();
-            const twelveHoursInMs = 12 * 60 * 60 * 1000;
-            
-            // Strategy: Use cache if it's recent enough (within 12 hours)
-            // This handles all edge cases: weekends, holidays, timezone differences
-            // Exchange rates update once per day, so 12-hour cache is reasonable
-            if (fetchedAt && (now - fetchedAt < twelveHoursInMs)) {
-              setRates(cachedRates);
-              setLoading(false);
-              return;
-            } else {
-              // Cache is older than 12 hours, show it first then update in background
-              setRates(cachedRates);
-              setLoading(false);
-              // Continue to fetch new data below
-            }
-          } catch (e) {
-            console.error("Failed to parse cached rates:", e);
-          }
-        }
-
-        // 2. Fetch latest data from network
         setLoading(true);
-        const response = await fetch("https://api.frankfurter.app/latest?base=USD", {
-          cache: "no-cache",
-        });
+        // Service Worker will handle caching with StaleWhileRevalidate strategy
+        const response = await fetch("https://api.frankfurter.app/latest?base=USD");
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -134,40 +104,14 @@ const Tool: FC = () => {
         
         const data = await response.json();
         const allRates: Record<string, number> = { USD: 1, ...data.rates };
-        const apiDate = data.date; // Date from API (YYYY-MM-DD format)
         
-        // 3. Update state and cache (with timestamp)
         setRates(allRates);
-        localStorage.setItem(
-          RATES_CACHE_KEY,
-          JSON.stringify({ 
-            rates: allRates, 
-            date: apiDate,
-            fetchedAt: Date.now() // Timestamp when we fetched the data
-          })
-        );
       } catch (error) {
-        // If cache exists, continue using it even if network fails
-        const cached = localStorage.getItem(RATES_CACHE_KEY);
-        if (cached) {
-          try {
-            const { rates: cachedRates } = JSON.parse(cached);
-            setRates(cachedRates);
-            toast.info("Using cached exchange rates (network request failed)");
-          } catch (e) {
-            console.error("Failed to use cached rates:", e);
-            if (error instanceof Error) {
-              toast.error(`Failed to fetch rates: ${error.message}`);
-            } else {
-              toast.error("Failed to fetch rates");
-            }
-          }
+        console.error("Failed to fetch rates:", error);
+        if (error instanceof Error) {
+          toast.error(`Failed to fetch exchange rates: ${error.message}`);
         } else {
-          if (error instanceof Error) {
-            toast.error(`Failed to fetch rates: ${error.message}`);
-          } else {
-            toast.error("Failed to fetch rates");
-          }
+          toast.error("Failed to fetch exchange rates");
         }
       } finally {
         setLoading(false);

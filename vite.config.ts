@@ -55,6 +55,21 @@ export default defineConfig(({ mode }) => ({
             }
           },
           {
+            // Frankfurter API 汇率缓存
+            urlPattern: /^https:\/\/api\.frankfurter\.app\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'currency-rates-cache',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 12 // 12 小时
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
             // Google Fonts 样式表缓存
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'StaleWhileRevalidate',
