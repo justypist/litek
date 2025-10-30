@@ -99,7 +99,7 @@ const Tool: FC = () => {
         const cached = localStorage.getItem(RATES_CACHE_KEY);
         if (cached) {
           try {
-            const { rates: cachedRates, date: cachedDate, fetchedAt } = JSON.parse(cached);
+            const { rates: cachedRates, fetchedAt } = JSON.parse(cached);
             
             const now = Date.now();
             const twelveHoursInMs = 12 * 60 * 60 * 1000;
