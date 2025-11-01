@@ -19,6 +19,8 @@ const tools = [
   { path: '/tool/uuid', priority: '0.9' },
   { path: '/tool/json', priority: '0.9' },
   { path: '/tool/base64', priority: '0.9' },
+  { path: '/tool/currency', priority: '0.9' },
+  { path: '/tool/image', priority: '0.9' },
   { path: '/tool/network/dns', priority: '0.8' },
   { path: '/tool/network/ping', priority: '0.8' },
   { path: '/tool/network/tcping', priority: '0.8' },

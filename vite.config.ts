@@ -9,6 +9,18 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(), 
     tailwindcss(),
+    // WASM 插件 - 配置正确的 MIME 类型
+    {
+      name: 'configure-server',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url?.endsWith('.wasm')) {
+            res.setHeader('Content-Type', 'application/wasm');
+          }
+          next();
+        });
+      },
+    },
     // HTML 替换插件 - 仅在生产环境注入 Cloudflare Analytics
     {
       name: 'html-transform',
@@ -38,7 +50,8 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,wasm}'],
+        maximumFileSizeToCacheInBytes: 100 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/ipinfo\.io\/.*/i,
@@ -111,7 +124,20 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+    fs: {
+      strict: false,
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@jsquash/avif', '@jsquash/jpeg', '@jsquash/png', '@jsquash/webp', '@jsquash/resize'],
+  },
   build: {
+    target: 'esnext',
     rollupOptions: {
       output: {
         manualChunks: (id) => {

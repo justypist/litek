@@ -1,11 +1,12 @@
 import { lazy, type ReactNode, type ComponentType } from 'react';
-import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins } from 'lucide-react'
+import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins, Image } from 'lucide-react'
 
 // 懒加载工具组件
 const UUID = lazy(() => import('./uuid'))
 const JSON = lazy(() => import('./json'))
 const Base64 = lazy(() => import('./base64'))
 const Currency = lazy(() => import('./currency'))
+const ImageTool = lazy(() => import('./image'))
 const DNS = lazy(() => import('./network/dns'))
 const Ping = lazy(() => import('./network/ping'))
 const TCPing = lazy(() => import('./network/tcping'))
@@ -49,6 +50,13 @@ export const tools: Tool[] = [
     description: "Real-time currency exchange rates",
     icon: <Coins />,
     component: Currency,
+  },
+  {
+    path: "image",
+    name: "Image Processor",
+    description: "Compress, convert and resize images",
+    icon: <Image />,
+    component: ImageTool,
   },
   {
     path: "network",
