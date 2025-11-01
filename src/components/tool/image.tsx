@@ -224,6 +224,40 @@ const Tool: FC = () => {
     };
   }, []);
 
+  // 处理粘贴事件 (Ctrl+V)
+  useEffect(() => {
+    const handlePaste = async (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      // 遍历剪贴板项目，查找图片
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        
+        // 检查是否为图片类型
+        if (item.type.startsWith("image/")) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            // 创建一个 FileList 对象来复用 handleFileUpload
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            await handleFileUpload(dataTransfer.files);
+            toast.success("Image pasted successfully");
+            break;
+          }
+        }
+      }
+    };
+
+    // 添加全局粘贴事件监听
+    document.addEventListener("paste", handlePaste);
+    
+    return () => {
+      document.removeEventListener("paste", handlePaste);
+    };
+  }, [handleFileUpload]);
+
   // 监听窗口大小变化,重新计算显示尺寸
   useEffect(() => {
     const handleResize = () => {
@@ -355,7 +389,7 @@ const Tool: FC = () => {
         >
           <Upload className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
           <h2 className="text-2xl font-semibold mb-3">Drag and drop image or click to upload</h2>
-          <p className="text-muted-foreground mb-6">Supports JPEG, PNG, WebP, AVIF, etc.</p>
+          <p className="text-muted-foreground mb-6">Supports JPEG, PNG, WebP, AVIF, etc. • Press <kbd className="px-2 py-1 text-xs font-semibold text-foreground bg-muted border border-border rounded">Ctrl+V</kbd> to paste</p>
           
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto text-left">
             <div className="flex items-start gap-3">
