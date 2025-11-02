@@ -17,6 +17,16 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 # 复制源代码
 COPY . .
 
+# 定义构建参数
+ARG VITE_WEBDAV_URL
+ARG VITE_WEBDAV_USERNAME
+ARG VITE_WEBDAV_PASSWORD
+
+# 设置环境变量（传递给 Vite）
+ENV VITE_WEBDAV_URL=$VITE_WEBDAV_URL
+ENV VITE_WEBDAV_USERNAME=$VITE_WEBDAV_USERNAME
+ENV VITE_WEBDAV_PASSWORD=$VITE_WEBDAV_PASSWORD
+
 # 构建应用
 RUN pnpm build
 

@@ -1,5 +1,5 @@
 import { lazy, type ReactNode, type ComponentType } from 'react';
-import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins, Image } from 'lucide-react'
+import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins, Image, Share2 } from 'lucide-react'
 
 // 懒加载工具组件
 const UUID = lazy(() => import('./uuid'))
@@ -7,6 +7,7 @@ const JSON = lazy(() => import('./json'))
 const Base64 = lazy(() => import('./base64'))
 const Currency = lazy(() => import('./currency'))
 const ImageTool = lazy(() => import('./image'))
+const Transfer = lazy(() => import('./transfer'))
 const DNS = lazy(() => import('./network/dns'))
 const Ping = lazy(() => import('./network/ping'))
 const TCPing = lazy(() => import('./network/tcping'))
@@ -57,6 +58,13 @@ export const tools: Tool[] = [
     description: "Compress, convert and resize images",
     icon: <Image />,
     component: ImageTool,
+  },
+  {
+    path: "transfer",
+    name: "File Transfer",
+    description: "Temporary file sharing with passcode",
+    icon: <Share2 />,
+    component: Transfer,
   },
   {
     path: "network",

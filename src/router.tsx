@@ -1,4 +1,4 @@
-import { Suspense, createElement } from "react";
+import { Suspense, createElement, lazy } from "react";
 import {
   createBrowserRouter,
   redirect,
@@ -8,6 +8,9 @@ import {
 
 import { tools, type Tool } from "@/components/tool";
 import { Layout } from "./layout";
+
+// 懒加载 Transfer 组件用于独立的下载路由
+const Transfer = lazy(() => import("@/components/tool/transfer"));
 
 // 加载中的占位组件
 const LoadingFallback = () => (
@@ -62,6 +65,15 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  // 独立的分享下载路由（不在 Layout 中）
+  {
+    path: "share/:shareId",
+    element: (
+      <Suspense fallback={<LoadingFallback />}>
+        {createElement(Transfer)}
+      </Suspense>
+    ),
   },
   {
     index: true,
