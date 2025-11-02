@@ -33,6 +33,8 @@ export default defineConfig(({ mode }) => ({
     },
     VitePWA({
       registerType: 'autoUpdate',
+      // 禁用自动注入 registerSW.js，改为手动延迟注册
+      injectRegister: null,
       includeAssets: ['lite.svg', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'Lite Kit - Lightweight Online Tools',
