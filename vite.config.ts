@@ -153,9 +153,31 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/react-router-dom')) {
             return 'react-router';
           }
-          // Radix UI组件
+          // Radix UI 组件按模块拆分，减少未使用的代码
+          if (id.includes('node_modules/@radix-ui/react-collapsible')) {
+            return 'radix-collapsible';
+          }
+          if (id.includes('node_modules/@radix-ui/react-dialog')) {
+            return 'radix-dialog';
+          }
+          if (id.includes('node_modules/@radix-ui/react-dropdown-menu')) {
+            return 'radix-dropdown';
+          }
+          if (id.includes('node_modules/@radix-ui/react-popover')) {
+            return 'radix-popover';
+          }
+          if (id.includes('node_modules/@radix-ui/react-select')) {
+            return 'radix-select';
+          }
+          if (id.includes('node_modules/@radix-ui/react-slider')) {
+            return 'radix-slider';
+          }
+          if (id.includes('node_modules/@radix-ui/react-tooltip')) {
+            return 'radix-tooltip';
+          }
+          // 其他 Radix UI 组件
           if (id.includes('node_modules/@radix-ui')) {
-            return 'ui-vendor';
+            return 'radix-other';
           }
           // 图标库
           if (id.includes('node_modules/lucide-react')) {
@@ -182,5 +204,7 @@ export default defineConfig(({ mode }) => ({
       },
     },
     chunkSizeWarningLimit: 500,
+    // CSS 代码分割优化
+    cssCodeSplit: true,
   },
 }))
