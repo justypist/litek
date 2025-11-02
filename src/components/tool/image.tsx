@@ -380,23 +380,26 @@ const Tool: FC = () => {
   // 如果没有图片,显示上传界面
   if (!image) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[60vh] px-4">
+      <div className="flex flex-col items-center justify-center h-full min-h-[60vh] px-4 py-8">
         <div
-          className="w-full max-w-2xl border-2 border-dashed rounded-2xl p-16 text-center hover:border-primary/50 hover:bg-muted/50 transition-all cursor-pointer"
+          className="w-full max-w-2xl border-2 border-dashed rounded-2xl p-6 sm:p-12 lg:p-16 text-center hover:border-primary/50 hover:bg-muted/50 transition-all cursor-pointer"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
-          <h2 className="text-2xl font-semibold mb-3">Drag and drop image or click to upload</h2>
-          <p className="text-muted-foreground mb-6">Supports JPEG, PNG, WebP, AVIF, etc. • Press <kbd className="px-2 py-1 text-xs font-semibold text-foreground bg-muted border border-border rounded">Ctrl+V</kbd> to paste</p>
+          <Upload className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mb-4 sm:mb-6" />
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">Drag and drop image or click to upload</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Supports JPEG, PNG, WebP, AVIF, etc.
+            <span className="hidden sm:inline"> • Press <kbd className="px-2 py-1 text-xs font-semibold text-foreground bg-muted border border-border rounded">Ctrl+V</kbd> to paste</span>
+          </p>
           
-          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto text-left">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <ImageIcon className="h-4 w-4 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium text-sm">High quality compression</p>
                 <p className="text-xs text-muted-foreground">Keep visual quality while reducing file size</p>
               </div>
@@ -405,7 +408,7 @@ const Tool: FC = () => {
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Settings2 className="h-4 w-4 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium text-sm">Format conversion</p>
                 <p className="text-xs text-muted-foreground">Supports multiple modern image formats</p>
               </div>
@@ -427,45 +430,48 @@ const Tool: FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* 顶部工具栏 */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={resetImage}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-4 py-3 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex items-center gap-3 min-w-0">
+          <Button variant="ghost" size="icon" onClick={resetImage} className="flex-shrink-0">
             <X className="h-4 w-4" />
           </Button>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">{image.originalFile.name}</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-medium truncate">{image.originalFile.name}</span>
             <span className="text-xs text-muted-foreground">
               {image.originalWidth} × {image.originalHeight}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
           {image.isProcessing && (
             <Button variant="outline" size="sm" onClick={cancelProcessing}>
-              <StopCircle className="h-4 w-4 mr-2" />
-              Cancel
+              <StopCircle className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Cancel</span>
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={() => setShowSettings(!showSettings)}>
-            <Settings2 className="h-4 w-4 mr-2" />
-            {showSettings ? "Hide" : "Show"} settings
+          <Button variant="outline" size="sm" onClick={() => setShowSettings(!showSettings)} className="flex-1 sm:flex-initial">
+            <Settings2 className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">{showSettings ? "Hide" : "Show"} settings</span>
+            <span className="sm:hidden">{showSettings ? "Hide" : "Settings"}</span>
           </Button>
           <Button
             size="sm"
             onClick={downloadImage}
             disabled={!image.processedBlob || image.isProcessing}
+            className="flex-1 sm:flex-initial"
           >
-            <Download className="h-4 w-4 mr-2" />
-            Download
+            <Download className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Download</span>
+            <span className="sm:hidden">Save</span>
           </Button>
         </div>
       </div>
 
       {/* 主内容区 */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* 图片对比区域 */}
-        <div className="flex-1 relative bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,.03)_10px,rgba(0,0,0,.03)_20px)] dark:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,.03)_10px,rgba(255,255,255,.03)_20px)]">
+        <div className="flex-1 relative min-h-[300px] lg:min-h-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,.03)_10px,rgba(0,0,0,.03)_20px)] dark:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,.03)_10px,rgba(255,255,255,.03)_20px)]">
           {image.isProcessing ? (
             <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10">
               <div className="flex flex-col items-center gap-3">
@@ -537,10 +543,10 @@ const Tool: FC = () => {
             )}
 
             {/* 文件大小信息 */}
-            <div className="absolute bottom-4 left-4 flex gap-3">
-              <div className="bg-background/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border">
+            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="bg-background/90 backdrop-blur-sm px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg shadow-lg border">
                 <p className="text-xs text-muted-foreground">Original</p>
-                <p className="font-semibold">{formatFileSize(image.originalSize)}</p>
+                <p className="font-semibold text-sm">{formatFileSize(image.originalSize)}</p>
               </div>
               {image.processedSize !== undefined && (() => {
                 const sizeDiff = image.originalSize - image.processedSize;
@@ -548,9 +554,9 @@ const Tool: FC = () => {
                 const isSmaller = sizeDiff > 0;
                 
                 return (
-                  <div className="bg-background/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border">
+                  <div className="bg-background/90 backdrop-blur-sm px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg shadow-lg border">
                     <p className="text-xs text-muted-foreground">Output</p>
-                    <p className={`font-semibold ${isSmaller ? 'text-green-600' : 'text-orange-600'}`}>
+                    <p className={`font-semibold text-sm ${isSmaller ? 'text-green-600' : 'text-orange-600'}`}>
                       {formatFileSize(image.processedSize)}
                       <span className="text-xs ml-1">
                         ({isSmaller ? '' : '+'}{Math.abs(percentDiff).toFixed(0)}%)
@@ -563,10 +569,10 @@ const Tool: FC = () => {
           </div>
         </div>
 
-        {/* 右侧设置面板 */}
+        {/* 设置面板 - 小屏幕时在底部，大屏幕时在右侧 */}
         {showSettings && (
-          <div className="w-80 border-l bg-background overflow-y-auto">
-            <div className="p-6 space-y-6">
+          <div className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l bg-background overflow-y-auto max-h-[50vh] lg:max-h-none">
+            <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
               {/* 格式选择 */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold">Output format</Label>
