@@ -20,15 +20,15 @@ COPY . .
 # 定义构建参数
 ARG VITE_WEBDAV_URL
 ARG VITE_WEBDAV_USERNAME
-ARG VITE_WEBDAV_PASSWORD
 
 # 设置环境变量（传递给 Vite）
 ENV VITE_WEBDAV_URL=$VITE_WEBDAV_URL
 ENV VITE_WEBDAV_USERNAME=$VITE_WEBDAV_USERNAME
-ENV VITE_WEBDAV_PASSWORD=$VITE_WEBDAV_PASSWORD
 
-# 构建应用
-RUN pnpm build
+# 构建应用（密码通过 secret mount 传递，不存储在镜像层）
+RUN --mount=type=secret,id=VITE_WEBDAV_PASSWORD \
+    export VITE_WEBDAV_PASSWORD=$(cat /run/secrets/VITE_WEBDAV_PASSWORD) && \
+    pnpm build
 
 # 第二阶段: 运行应用
 FROM nginx:alpine

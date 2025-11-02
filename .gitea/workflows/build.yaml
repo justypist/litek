@@ -46,6 +46,7 @@ jobs:
           build-args: |
             VITE_WEBDAV_URL=${{ secrets.VITE_WEBDAV_URL }}
             VITE_WEBDAV_USERNAME=${{ secrets.VITE_WEBDAV_USERNAME }}
+          secrets: |
             VITE_WEBDAV_PASSWORD=${{ secrets.VITE_WEBDAV_PASSWORD }}
           # cache-from: type=registry,ref=${{ secrets.REGISTRY_ENDPOINT }}/${{ github.repository_owner }}/litek:buildcache
           # cache-to: type=registry,ref=${{ secrets.REGISTRY_ENDPOINT }}/${{ github.repository_owner }}/litek:buildcache,mode=max
