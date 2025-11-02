@@ -39,25 +39,25 @@ const Tool: FC = () => {
   };
 
   return (
-    <div className="h-[50vh] flex flex-row gap-4 pt-[20vh]">
+    <div className="flex flex-col md:flex-row gap-4 h-full min-h-[400px]">
       <Textarea
-        className="flex-1 resize-none"
+        className="flex-1 resize-none min-h-[200px] md:min-h-0"
         placeholder="Enter the original text"
         value={decoded}
         onChange={(e) => setDecoded(e.target.value)}
       />
-      <div className="flex flex-col gap-2 justify-center">
-        <Button onClick={encode}>
+      <div className="flex md:flex-col gap-2 justify-center">
+        <Button onClick={encode} className="flex-1 md:flex-initial">
           <ArrowRightIcon className="size-4" />
-          Encode
+          <span className="ml-2">Encode</span>
         </Button>
-        <Button onClick={decode}>
+        <Button onClick={decode} className="flex-1 md:flex-initial">
           <ArrowLeftIcon className="size-4" />
-          Decode
+          <span className="ml-2">Decode</span>
         </Button>
       </div>
       <Textarea
-        className="flex-1 resize-none"
+        className="flex-1 resize-none min-h-[200px] md:min-h-0"
         placeholder="Enter the Base64 encoded text"
         value={encoded}
         onChange={(e) => setEncoded(e.target.value)}

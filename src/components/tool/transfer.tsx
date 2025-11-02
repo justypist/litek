@@ -736,10 +736,11 @@ const Tool: FC = () => {
   const location = window.location.pathname;
 
   // 如果有 shareId 或者在 /share/:shareId 路由下，显示下载界面
+  // 独立路由需要自己的滚动容器
   if (shareId || location.startsWith('/share/')) {
     const id = shareId || location.split('/share/')[1];
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 overflow-y-auto">
         <DownloadView shareId={id} />
       </div>
     );
@@ -748,7 +749,7 @@ const Tool: FC = () => {
   // 如果配置缺失，显示不可用提示
   if (!hasConfig) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-4 px-4">
         <div className="flex flex-col gap-6 max-w-md mx-auto items-center justify-center min-h-[400px]">
           <AlertCircle className="h-16 w-16 text-yellow-500" />
           <div className="text-center">
@@ -762,10 +763,10 @@ const Tool: FC = () => {
     );
   }
 
-  // 否则显示上传和管理界面
+  // 否则显示上传和管理界面（在 Layout 内，由 Layout 提供滚动）
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-6">
+    <div className="container mx-auto py-4 px-4">
+      <div className="flex flex-col gap-6 pb-8">
         {/* 标签切换 */}
         <div className="flex gap-2 border-b">
           <button

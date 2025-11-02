@@ -25,7 +25,7 @@ const IDGenerator: FC<IDGeneratorProps> = ({ label, value, onRegenerate }) => {
     <div className="flex flex-col gap-2">
       <label className="font-medium">{label}</label>
       <div className="flex items-center gap-2">
-        <span className="flex-1 px-3 py-2 bg-muted rounded-md font-mono text-sm break-all max-w-[400px]">
+        <span className="flex-1 px-3 py-2 bg-muted rounded-md font-mono text-sm break-all">
           {value}
         </span>
         <Button
@@ -33,6 +33,7 @@ const IDGenerator: FC<IDGeneratorProps> = ({ label, value, onRegenerate }) => {
           variant="outline"
           onClick={onRegenerate}
           title="Regenerate"
+          className="flex-shrink-0"
         >
           <RefreshCw className="h-4 w-4" />
         </Button>
@@ -41,6 +42,7 @@ const IDGenerator: FC<IDGeneratorProps> = ({ label, value, onRegenerate }) => {
           variant="outline"
           onClick={copyToClipboard}
           title="Copy"
+          className="flex-shrink-0"
         >
           <Copy className="h-4 w-4" />
         </Button>

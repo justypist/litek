@@ -21,7 +21,7 @@ export const Layout: FC = () => {
             <SidebarTrigger className="size-10" />
             <ModeToggle />
           </nav>
-          <main className="flex-1 overflow-auto p-4 overflow-hidden">
+          <main className="flex-1 overflow-auto p-4">
             <Outlet />
           </main>
         </div>
