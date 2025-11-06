@@ -21,16 +21,6 @@ export default defineConfig(({ mode }) => ({
         });
       },
     },
-    // HTML 替换插件 - 仅在生产环境注入 Cloudflare Analytics
-    {
-      name: 'html-transform',
-      transformIndexHtml(html) {
-        const cloudflareScript = mode === 'production' 
-          ? `<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2aecdc025eb043bc89ce931b54a80054"}'></script>`
-          : '';
-        return html.replace('<!--CLOUDFLARE_ANALYTICS_PLACEHOLDER-->', cloudflareScript);
-      }
-    },
     VitePWA({
       registerType: 'autoUpdate',
       // 禁用自动注入 registerSW.js，改为手动延迟注册
