@@ -1,5 +1,5 @@
 import { lazy, type ReactNode, type ComponentType } from 'react';
-import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins, Image, Share2 } from 'lucide-react'
+import { FileJson, Hash, Binary, Network, Globe, Activity, Gauge, Wifi, MapPin, Coins, Image, Share2, KeyRound } from 'lucide-react'
 
 // 懒加载工具组件
 const UUID = lazy(() => import('./uuid'))
@@ -13,6 +13,7 @@ const Ping = lazy(() => import('./network/ping'))
 const TCPing = lazy(() => import('./network/tcping'))
 const SpeedTest = lazy(() => import('./network/speedtest'))
 const IPQuery = lazy(() => import('./network/ipquery'))
+const RSA = lazy(() => import('./rsa'))
 
 export interface Tool {
   path: string;
@@ -65,6 +66,13 @@ export const tools: Tool[] = [
     description: "Temporary file sharing with passcode",
     icon: <Share2 />,
     component: Transfer,
+  },
+  {
+    path: "rsa",
+    name: "SSH Key Generator",
+    description: "Generate SSH RSA key pairs (like ssh-keygen)",
+    icon: <KeyRound />,
+    component: RSA,
   },
   {
     path: "network",
