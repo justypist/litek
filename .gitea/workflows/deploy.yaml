@@ -10,7 +10,7 @@ on:
       compose_path:
         description: 'docker-compose 文件路径'
         required: true
-        default: '/root/.compose/litek/compose.yaml'
+        default: '/home/typist/.compose/litek/compose.yaml'
   workflow_call:
     inputs:
       image_tag:
@@ -21,7 +21,7 @@ on:
         description: 'docker-compose 文件路径'
         required: false
         type: string
-        default: '/root/.compose/litek/compose.yaml'
+        default: '/home/typist/.compose/litek/compose.yaml'
 
 jobs:
   deploy:
