@@ -53,9 +53,45 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,wasm}'],
+        globPatterns: ['**/*.{js,css,svg,png,ico,woff2,wasm}'],
+        // 不预缓存 HTML，使用运行时缓存策略确保能检测到更新
+        globIgnores: ['**/index.html'],
         maximumFileSizeToCacheInBytes: 100 * 1024 * 1024,
+        // 使用 NetworkFirst 策略处理导航请求（HTML），确保能检测到新版本
+        navigationPreload: true,
         runtimeCaching: [
+          {
+            // HTML 文件使用 NetworkFirst，优先从网络获取以检测更新
+            // 匹配根路径和 index.html
+            urlPattern: ({ request, url }) => {
+              return request.mode === 'navigate' || 
+                     url.pathname === '/' || 
+                     url.pathname === '/index.html'
+            },
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'html-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 // 24 小时
+              },
+              networkTimeoutSeconds: 3 // 3 秒超时，超时后使用缓存
+            }
+          },
+          {
+            // 同源静态资源使用 StaleWhileRevalidate，既能快速响应又能检查更新
+            urlPattern: ({ sameOrigin, url }) => {
+              return sameOrigin && /\.(js|css|svg|png|ico|woff2|wasm)$/i.test(url.pathname)
+            },
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'static-resources',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 天
+              }
+            }
+          },
           {
             urlPattern: /^https:\/\/ipinfo\.io\/.*/i,
             handler: "NetworkFirst",
