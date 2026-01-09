@@ -48,8 +48,8 @@ const Tool: FC = () => {
     const startTime = performance.now();
 
     try {
-      // 使用 ipinfo.io 查询当前IP (免费，无需密钥)
-      const response = await fetch("https://ipinfo.io/json");
+      // https://api.ipapi.is
+      const response = await fetch("https://api.ipapi.is");
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -91,8 +91,8 @@ const Tool: FC = () => {
     const startTime = performance.now();
 
     try {
-      // 使用 ipinfo.io (免费，稳定可靠)
-      const response = await fetch(`https://ipinfo.io/${encodeURIComponent(ip.trim())}/json`);
+      // https://api.ipapi.is/?q=1.1.1.1
+      const response = await fetch(`https://api.ipapi.is/?q=${encodeURIComponent(ip.trim())}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -103,7 +103,6 @@ const Tool: FC = () => {
       
       setQueryTime(endTime - startTime);
 
-      // ipinfo.io 返回格式已经符合 IPInfo 接口
       setIpInfo(data);
       toast.success("Query successful");
     } catch (error) {
